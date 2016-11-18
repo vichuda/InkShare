@@ -1,11 +1,16 @@
 /**
  * Client entry point
  */
-import React from 'react';
-import { render } from 'react-dom';
-import { AppContainer } from 'react-hot-loader';
-import App from './App';
-import { configureStore } from './store';
+import React from 'react'
+import { render } from 'react-dom'
+import { AppContainer } from 'react-hot-loader'
+import App from './App'
+import { configureStore } from './store'
+import injectTapEventPlugin from 'react-tap-event-plugin'
+
+// Needed for onTouchTap
+// http://stackoverflow.com/a/34015469/988941
+injectTapEventPlugin()
 
 // Initialize store
 const store = configureStore(window.__INITIAL_STATE__);
