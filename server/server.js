@@ -59,12 +59,15 @@ app.use(passport.initialize())
 app.use(passport.session())
 
 passport.serializeUser((user, done) => {
-  done(null, user.id)
+  done(null, (user || { id: null }).id)
 })
 
 passport.deserializeUser((id, done) => {
-  console.log(`deserializing ${id}`)
-  done(null, { id: '123', name: 'caleb', password: '123' })
+  if (id === '123') {
+    done(null, { id: '123', name: 'caleb', password: '123' })
+  } else {
+    done(null, null)
+  }
   // User.findById(id, function(err, user) {
   //   done(err, user);
   // })
@@ -74,8 +77,8 @@ passport.deserializeUser((id, done) => {
 /* passport stuff move i will move this into its own module once i get it working */
 const basicStrategy = new BasicStrategy(
   (username, password, done) => {
-    console.log(`username: ${username}, password: ${password}`)
-    if (password === 'aoeu') {
+    console.log(`trying to login using: username: ${username}, password: ${password}`)
+    if (password === '123') {
       return done(null, {
         id: '123',
         name: 'caleb',
@@ -88,12 +91,23 @@ const basicStrategy = new BasicStrategy(
 passport.use(basicStrategy)
 
 
-app.post('/api/login', passport.authenticate('local', {
-  successRedirect: '/',
-  failureRedirect: '/login'
-}))
+app.post('/api/login', (req, res, next) => {
+  passport.authenticate('local', (err, user) => {
+    const failed = (message) => res.send({ error: 'login failed', message })
 
-app.route('/user').get((req, res) => res.send(`your user profile: ${JSON.stringify(req.user)}`))
+    if (err) return next(err)
+    if (!user) return failed('no user')
+    req.logIn(user, (err) => {
+      if (err) return failed(err.message)
+      return res.send(user)
+    })
+  })(req, res, next)
+})
+
+
+app.route('/api/user').get((req, res) => {
+  res.send(req.user || { error: 'not logged in' })
+})
 
 app.use('/api', api)
 

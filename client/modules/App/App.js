@@ -10,10 +10,11 @@ import { grey700 } from 'material-ui/styles/colors'
 import styles from './App.css'
 
 // Import Components
-import Helmet from 'react-helmet';
-import DevTools from './components/DevTools';
-import Header from './components/Header/Header';
-import Footer from './components/Footer/Footer';
+import Helmet from 'react-helmet'
+import DevTools from './components/DevTools'
+import Header from './components/Header/Header'
+import Footer from './components/Footer/Footer'
+import { getUserRequest } from '../User/UserActions'
 
 export class App extends Component {
   constructor(props) {
@@ -21,15 +22,18 @@ export class App extends Component {
     this.state = { isMounted: false };
   }
 
+
   componentDidMount() {
     this.setState({isMounted: true}); // eslint-disable-line
+    this.props.dispatch(getUserRequest())
   }
 
-  // {this.state.isMounted && !window.devToolsExtension && process.env.NODE_ENV === 'development' && <DevTools />}
+
   render() {
     return (
       <MuiThemeProvider muiTheme={getMuiTheme(darkBaseTheme)}>
         <div style={{ backgroundColor: grey700 }}>
+          {this.state.isMounted && !window.devToolsExtension && process.env.NODE_ENV === 'development' && <DevTools />}
           <div>
             <Helmet
               title="Ink Share"
@@ -60,15 +64,12 @@ export class App extends Component {
 
 App.propTypes = {
   children: PropTypes.object.isRequired,
-  dispatch: PropTypes.func.isRequired,
-  intl: PropTypes.object.isRequired,
+  dispatch: PropTypes.func.isRequired
 }
 
 // Retrieve data from store as props
 function mapStateToProps(store) {
-  return {
-    intl: store.intl,
-  }
+  return {}
 }
 
 export default connect(mapStateToProps)(App)

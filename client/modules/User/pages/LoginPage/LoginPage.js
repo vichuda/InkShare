@@ -1,6 +1,9 @@
-import React, { Component } from 'react'
+import React, { Component, PropTypes } from 'react'
 import TextField from 'material-ui/TextField'
-import { login } from '../../UserActions'
+import { login, setUser } from '../../UserActions'
+import { getUser } from '../../UserReducer'
+import { connect } from 'react-redux'
+import { browserHistory } from 'react-router'
 
 class LoginPage extends Component {
   constructor(props) {
@@ -10,20 +13,52 @@ class LoginPage extends Component {
       username: '',
       password: ''
     }
+
+    this.handleLoginResponse = this.handleLoginResponse.bind(this)
+    this.handleFormKeyPressed = this.handleFormKeyPressed.bind(this)
+    this.handleFieldChange = this.handleFieldChange.bind(this)
   }
 
 
-  handleFieldChange(field, e) {
+  handleFieldChange(e) {
+    const field = e.target.name
     this.setState({ [field]: e.target.value })
   }
 
 
   handleFormKeyPressed(e) {
-    if (e.key === 'Enter'
-        && this.state.username.length > 0
-        && this.state.password.length > 0) {
-      login(this.state.username, this.state.password)
-        .then(response => console.log(response))
+    const username = this.state.username
+    const password = this.state.password
+    if (this.isEnterKey(e.key) && this.isValidCredentials(username, password)) {
+      this.login(username, password)
+    }
+  }
+
+
+  isEnterKey(key) {
+    return key === 'Enter'
+  }
+
+
+  isValidCredentials(username, password) {
+    return username.length > 0
+        && password.length > 0
+  }
+
+
+  login(username, password) {
+    login(username, password)
+      .then(this.handleLoginResponse)
+      .catch(console.error)
+  }
+
+
+  handleLoginResponse(user) {
+    if (!user.error) {
+      this.props.dispatch(setUser(user))
+      browserHistory.push('/')
+    } else {
+      console.log('login failed')
     }
   }
 
@@ -32,18 +67,21 @@ class LoginPage extends Component {
     return (
       <div>
         <h3>LOGIN / SIGN IN</h3>
-        <form onKeyPress={this.handleFormKeyPressed.bind(this)}>
+        <form onKeyPress={this.handleFormKeyPressed}>
           <TextField
             floatingLabelText="Username"
             fullWidth={Boolean(true)}
             value={this.state.username}
-            onChange={this.handleFieldChange.bind(this, 'username')}
+            name="username"
+            onChange={this.handleFieldChange}
+            autoComplete="false"
           />
           <TextField
             floatingLabelText="Password"
             fullWidth={Boolean(true)}
             value={this.state.password}
-            onChange={this.handleFieldChange.bind(this, 'password')}
+            name="password"
+            onChange={this.handleFieldChange}
             type="password"
           />
         </form>
@@ -52,24 +90,17 @@ class LoginPage extends Component {
   }
 }
 
-LoginPage.propTypes = {}
+LoginPage.propTypes = {
+  dispatch: PropTypes.func.isRequired,
+  user: PropTypes.object
+}
 
-export default LoginPage
+LoginPage.need = []
 
+function mapStateToProps(state) {
+  return {
+    user: getUser(state)
+  }
+}
 
-// <div>
-//   Login
-//   <form action="/api/login" method="post">
-//     <div>
-//       <label>Username:</label>
-//       <input type="text" name="username" />
-//     </div>
-//     <div>
-//       <label>Password:</label>
-//       <input type="password" name="password" />
-//     </div>
-//     <div>
-//       <input type="submit" value="Log In" />
-//     </div>
-//   </form>
-// </div>
+export default connect(mapStateToProps)(LoginPage)
