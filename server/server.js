@@ -7,6 +7,7 @@ import IntlWrapper from '../client/modules/Intl/IntlWrapper'
 import session from 'express-session'
 import passport from 'passport'
 import BasicStrategy from 'passport-local'
+import User from './models/user'
 
 // Webpack Requirements
 import webpack from 'webpack'

@@ -1,9 +1,9 @@
 import React, { Component, PropTypes } from 'react'
 import TextField from 'material-ui/TextField'
-import { login, setUser } from '../../UserActions'
-import { getUser } from '../../UserReducer'
+import { login, setUserProfile } from '../../UserActions'
+import { getUserProfile } from '../../UserReducer'
 import { connect } from 'react-redux'
-import { browserHistory } from 'react-router'
+import { withRouter } from 'react-router'
 
 class LoginPage extends Component {
   constructor(props) {
@@ -49,16 +49,16 @@ class LoginPage extends Component {
   login(username, password) {
     login(username, password)
       .then(this.handleLoginResponse)
-      .catch(console.error)
+      .catch(console.error) // eslint-disable-line
   }
 
 
   handleLoginResponse(user) {
     if (!user.error) {
-      this.props.dispatch(setUser(user))
-      browserHistory.push('/')
+      this.props.dispatch(setUserProfile(user))
+      this.props.router.goBack()
     } else {
-      console.log('login failed')
+      console.log('login failed') // eslint-disable-line
     }
   }
 
@@ -92,6 +92,7 @@ class LoginPage extends Component {
 
 LoginPage.propTypes = {
   dispatch: PropTypes.func.isRequired,
+  router: PropTypes.object.isRequired,
   user: PropTypes.object
 }
 
@@ -99,8 +100,8 @@ LoginPage.need = []
 
 function mapStateToProps(state) {
   return {
-    user: getUser(state)
+    user: getUserProfile(state)
   }
 }
 
-export default connect(mapStateToProps)(LoginPage)
+export default connect(mapStateToProps)(withRouter(LoginPage))

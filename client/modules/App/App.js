@@ -15,6 +15,7 @@ import DevTools from './components/DevTools'
 import Header from './components/Header/Header'
 import Footer from './components/Footer/Footer'
 import { getUserRequest } from '../User/UserActions'
+import { getUserProfile } from '../User/UserReducer'
 
 export class App extends Component {
   constructor(props) {
@@ -50,7 +51,7 @@ export class App extends Component {
                 },
               ]}
             />
-            <Header />
+            <Header user={this.props.user} />
             <div className={styles.container}>
               {this.props.children}
             </div>
@@ -64,12 +65,15 @@ export class App extends Component {
 
 App.propTypes = {
   children: PropTypes.object.isRequired,
-  dispatch: PropTypes.func.isRequired
+  dispatch: PropTypes.func.isRequired,
+  user: PropTypes.object
 }
 
 // Retrieve data from store as props
 function mapStateToProps(store) {
-  return {}
+  return {
+    user: getUserProfile(store)
+  }
 }
 
 export default connect(mapStateToProps)(App)
