@@ -15,7 +15,7 @@ import DevTools from './components/DevTools'
 import Header from './components/Header/Header'
 import Footer from './components/Footer/Footer'
 import { getUserRequest } from '../User/UserActions'
-import { getUserProfile } from '../User/UserReducer'
+import { getUser } from '../User/UserReducer'
 
 export class App extends Component {
   constructor(props) {
@@ -72,7 +72,7 @@ App.propTypes = {
 // Retrieve data from store as props
 function mapStateToProps(store) {
   return {
-    user: getUserProfile(store)
+    user: getUser(store)
   }
 }
 

@@ -1,7 +1,7 @@
 import React, { Component, PropTypes } from 'react'
 import TextField from 'material-ui/TextField'
-import { login, setUserProfile } from '../../UserActions'
-import { getUserProfile } from '../../UserReducer'
+import { login, setUser } from '../../UserActions'
+import { getUser } from '../../UserReducer'
 import { connect } from 'react-redux'
 import { withRouter } from 'react-router'
 
@@ -53,9 +53,9 @@ class LoginPage extends Component {
   }
 
 
-  handleLoginResponse(user) {
-    if (!user.error) {
-      this.props.dispatch(setUserProfile(user))
+  handleLoginResponse({ data: user = null }) {
+    if (user) {
+      this.props.dispatch(setUser(user))
       this.props.router.goBack()
     } else {
       console.log('login failed') // eslint-disable-line
@@ -100,7 +100,7 @@ LoginPage.need = []
 
 function mapStateToProps(state) {
   return {
-    user: getUserProfile(state)
+    user: getUser(state)
   }
 }
 

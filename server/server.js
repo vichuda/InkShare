@@ -60,14 +60,14 @@ app.use(passport.initialize())
 app.use(passport.session())
 
 passport.serializeUser((user, done) => {
-  done(null, (user || { id: null }).id)
+  done(null, user)
 })
 
 passport.deserializeUser((id, done) => {
   if (id === '123') {
     done(null, { id: '123', name: 'caleb', password: '123' })
   } else {
-    done(null, null)
+    done(null, false)
   }
   // User.findById(id, function(err, user) {
   //   done(err, user);
@@ -78,15 +78,28 @@ passport.deserializeUser((id, done) => {
 /* passport stuff move i will move this into its own module once i get it working */
 const basicStrategy = new BasicStrategy(
   (username, password, done) => {
-    console.log(`trying to login using: username: ${username}, password: ${password}`)
-    if (password === '123') {
-      return done(null, {
-        id: '123',
-        name: 'caleb',
-        password: '123'
+    // if (password === '123') {
+    //   return done(null, {
+    //     id: '123',
+    //     name: 'caleb',
+    //     password: '123'
+    //   })
+    // }
+
+    User.findOne({ username, password })
+      .then(user => {
+        if (user) {
+          return done(null, user)
+        }
+
+        return new User({ username, password, id: '100' })
+          .save()
+          .then(newUser => {
+            console.log('yoru new user: ', newUser)
+            return done(null, newUser)
+          })
       })
-    }
-    return done(null, false)
+      .catch(err => done(err, false))
   }
 )
 passport.use(basicStrategy)
@@ -94,20 +107,20 @@ passport.use(basicStrategy)
 
 app.post('/api/login', (req, res, next) => {
   passport.authenticate('local', (err, user) => {
-    const failed = (message) => res.send({ error: 'login failed', message })
+    const failed = () => res.send({ data: null })
 
     if (err) return next(err)
-    if (!user) return failed('no user')
+    if (!user) return failed()
     req.logIn(user, (err) => {
       if (err) return failed(err.message)
-      return res.send(user)
+      return res.send({ data: user })
     })
   })(req, res, next)
 })
 
 
 app.route('/api/user').get((req, res) => {
-  res.send(req.user || { error: 'not logged in' })
+  res.send({ data: (req.user || null) })
 })
 
 app.use('/api', api)

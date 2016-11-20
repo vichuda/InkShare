@@ -1,18 +1,18 @@
-import { SET_USER_PROFILE } from './UserActions'
+import { SET_USER } from './UserActions'
 
-const initialState = { userProfile: null }
+const initialState = null
 
 function UserReducer(state = initialState, action) {
   switch (action.type) {
-    case SET_USER_PROFILE:
-      return !action.userProfile || action.userProfile.error ? initialState : { userProfile: action.userProfile }
+    case SET_USER:
+      return action.user
     default:
       return state
   }
 }
 
-export function getUserProfile(state) {
-  return state.user.userProfile
+export function getUser(state) {
+  return state.user
 }
 
 export default UserReducer

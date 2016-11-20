@@ -1,12 +1,12 @@
 import callApi from '../../util/apiCaller'
 
-export const SET_USER_PROFILE = 'SET_USER_PROFILE'
+export const SET_USER = 'SET_USER'
 
 
 export function getUserRequest() {
   return function dispatchedRequest(dispatch) {
     return callApi('user')
-      .then(response => dispatch(setUserProfile(response)))
+      .then(response => dispatch(setUser(response.data)))
       .catch(console.error) // eslint-disable-line
   }
 }
@@ -18,9 +18,9 @@ export function login(username, password) {
 }
 
 
-export function setUserProfile(userProfile) {
+export function setUser(user) {
   return {
-    type: SET_USER_PROFILE,
-    userProfile
+    type: SET_USER,
+    user
   }
 }
