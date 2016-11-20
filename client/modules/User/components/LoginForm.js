@@ -25,7 +25,7 @@ class LoginForm extends Component {
       } else if (this.props.toggleSnackBar) {
         this.props.toggleSnackBar('the passwords don\'t match')
       }
-    } else {
+    } else if (loginTools.isEnterKey(e.key)) {
       this.props.toggleSnackBar('you need to fill out all of the fields')
     }
   }
