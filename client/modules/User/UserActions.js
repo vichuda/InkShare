@@ -12,8 +12,8 @@ export function getUserRequest() {
 }
 
 
-export function login(username, password) {
-  return callApi('login', 'POST', { username, password })
+export function login(username, password, signup) {
+  return callApi('login', 'POST', { username, password, signup })
     .catch(err => console.error(err)) // eslint-disable-line
 }
 

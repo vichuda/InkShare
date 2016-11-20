@@ -1,54 +1,38 @@
 import React, { Component, PropTypes } from 'react'
-import TextField from 'material-ui/TextField'
+import { Tabs, Tab } from 'material-ui/Tabs'
+import SnackBar from 'material-ui/SnackBar'
 import { login, setUser } from '../../UserActions'
 import { getUser } from '../../UserReducer'
 import { connect } from 'react-redux'
 import { withRouter } from 'react-router'
+
+import LoginForm from '../../components/LoginForm'
 
 class LoginPage extends Component {
   constructor(props) {
     super(props)
 
     this.state = {
-      username: '',
-      password: ''
+      snackBarMessage: '',
+      showSnackBar: false
     }
 
-    this.handleLoginResponse = this.handleLoginResponse.bind(this)
-    this.handleFormKeyPressed = this.handleFormKeyPressed.bind(this)
-    this.handleFieldChange = this.handleFieldChange.bind(this)
-  }
-
-
-  handleFieldChange(e) {
-    const field = e.target.name
-    this.setState({ [field]: e.target.value })
-  }
-
-
-  handleFormKeyPressed(e) {
-    const username = this.state.username
-    const password = this.state.password
-    if (this.isEnterKey(e.key) && this.isValidCredentials(username, password)) {
-      this.login(username, password)
-    }
-  }
-
-
-  isEnterKey(key) {
-    return key === 'Enter'
-  }
-
-
-  isValidCredentials(username, password) {
-    return username.length > 0
-        && password.length > 0
+    this.login = this.login.bind(this)
+    this.signin = this.signin.bind(this)
+    this.toggleSnackBar = this.toggleSnackBar.bind(this)
   }
 
 
   login(username, password) {
-    login(username, password)
-      .then(this.handleLoginResponse)
+    login(username, password, false)
+      .then(this.handleLoginResponse.bind(this))
+      .catch(console.error) // eslint-disable-line
+  }
+
+
+  signin(username, password) {
+    login(username, password, true)
+      .then(this.handleLoginResponse.bind(this))
       .catch(console.error) // eslint-disable-line
   }
 
@@ -58,33 +42,51 @@ class LoginPage extends Component {
       this.props.dispatch(setUser(user))
       this.props.router.goBack()
     } else {
-      console.log('login failed') // eslint-disable-line
+      this.toggleSnackBar('invalid username or password')
     }
   }
 
 
+  toggleSnackBar(message = null) {
+    if (message) {
+      this.setState({ snackBarMessage: message })
+      this.setState({ showSnackBar: true })
+    } else {
+      this.setState({ showSnackBar: false })
+    }
+  }
+
+
+  /*
+    i would have made the tabs part of
+      the LoginForm and SignUpForm but
+      material-ui is weird and wont work
+      like that without some hackery
+  */
   render() {
     return (
       <div>
-        <h3>LOGIN / SIGN IN</h3>
-        <form onKeyPress={this.handleFormKeyPressed}>
-          <TextField
-            floatingLabelText="Username"
-            fullWidth={Boolean(true)}
-            value={this.state.username}
-            name="username"
-            onChange={this.handleFieldChange}
-            autoComplete="false"
-          />
-          <TextField
-            floatingLabelText="Password"
-            fullWidth={Boolean(true)}
-            value={this.state.password}
-            name="password"
-            onChange={this.handleFieldChange}
-            type="password"
-          />
-        </form>
+        <Tabs>
+          <Tab label="Login">
+            <LoginForm
+              login={this.login}
+              toggleSnackBar={this.toggleSnackBar}
+            />
+          </Tab>
+          <Tab label="Sign Up">
+            <LoginForm
+              login={this.signin}
+              signupToggled={Boolean(true)}
+              toggleSnackBar={this.toggleSnackBar}
+            />
+          </Tab>
+        </Tabs>
+        <SnackBar
+          open={this.state.showSnackBar}
+          message={this.state.snackBarMessage}
+          autoHideDuration={2000}
+          onRequestClose={this.showSnackBar}
+        />
       </div>
     )
   }

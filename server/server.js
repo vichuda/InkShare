@@ -8,6 +8,7 @@ import session from 'express-session'
 import passport from 'passport'
 import BasicStrategy from 'passport-local'
 import User from './models/user'
+import cuid from 'cuid'
 
 // Webpack Requirements
 import webpack from 'webpack'
@@ -60,44 +61,37 @@ app.use(passport.initialize())
 app.use(passport.session())
 
 passport.serializeUser((user, done) => {
-  done(null, user)
+  done(null, user._id)
 })
 
 passport.deserializeUser((id, done) => {
-  if (id === '123') {
-    done(null, { id: '123', name: 'caleb', password: '123' })
-  } else {
-    done(null, false)
-  }
-  // User.findById(id, function(err, user) {
-  //   done(err, user);
-  // })
+  User.findById(id, (err, user) => {
+    done(err, user)
+  })
 })
 
 
 /* passport stuff move i will move this into its own module once i get it working */
 const basicStrategy = new BasicStrategy(
-  (username, password, done) => {
-    // if (password === '123') {
-    //   return done(null, {
-    //     id: '123',
-    //     name: 'caleb',
-    //     password: '123'
-    //   })
-    // }
+  {
+    passReqToCallback: true
+  },
+  (req, username, password, done) => {
+    const signup = req.body.signup
 
     User.findOne({ username, password })
       .then(user => {
         if (user) {
           return done(null, user)
+        } else if (signup) {
+          return new User({ username, password, id: cuid() })
+            .save()
+            .then(newUser => {
+              return done(null, newUser)
+            })
         }
 
-        return new User({ username, password, id: '100' })
-          .save()
-          .then(newUser => {
-            console.log('yoru new user: ', newUser)
-            return done(null, newUser)
-          })
+        return done(null, false)
       })
       .catch(err => done(err, false))
   }
@@ -112,7 +106,7 @@ app.post('/api/login', (req, res, next) => {
     if (err) return next(err)
     if (!user) return failed()
     req.logIn(user, (err) => {
-      if (err) return failed(err.message)
+      if (err) return failed()
       return res.send({ data: user })
     })
   })(req, res, next)
