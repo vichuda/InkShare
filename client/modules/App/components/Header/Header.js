@@ -51,7 +51,6 @@ export function Header(props) {
 
   return (
     <div className={styles.header}>
-      {console.log(document.cookie)}
       <AppBar
         title="Ink Share" showMenuIconButton={Boolean(false)}
         onTitleTouchTap={home}

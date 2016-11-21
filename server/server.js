@@ -114,6 +114,7 @@ app.post('/api/login', (req, res, next) => {
 
 
 app.route('/api/user').get((req, res) => {
+  console.log(req.headers)
   res.send({ data: (req.user || null) })
 })
 
@@ -180,7 +181,12 @@ app.use((req, res, next) => {
       return next();
     }
 
-    const store = configureStore();
+    const store = configureStore()
+    // put the user into the store in this request because making server side requests in the need doesn't have the credentials/cookies
+    store.dispatch({
+      type: 'SET_USER',
+      user: req.user || null
+    })
 
     return fetchComponentData(store, renderProps.components, renderProps.params)
       .then(() => {
