@@ -1,7 +1,8 @@
 /* eslint-disable global-require */
-import React from 'react';
-import { Route, IndexRoute } from 'react-router';
-import App from './modules/App/App';
+import React from 'react'
+import { Route, IndexRoute } from 'react-router'
+import App from './modules/App/App'
+import userReducer from './modules/User/UserReducer'
 
 // require.ensure polyfill for node
 if (typeof require.ensure !== 'function') {
@@ -34,17 +35,10 @@ export default (
     />
     <Route
       path="/login"
+      onEnter={function x() { console.log('enter called on /login: ', window.__INITIAL_STATE__) }}
       getComponent={(nextState, cb) => {
         require.ensure([], require => {
           cb(null, require('./modules/User/pages/LoginPage/LoginPage').default)
-        });
-      }}
-    />
-    <Route
-      path="/posts/:slug-:cuid"
-      getComponent={(nextState, cb) => {
-        require.ensure([], require => {
-          cb(null, require('./modules/Post/pages/PostDetailPage/PostDetailPage').default)
         });
       }}
     />

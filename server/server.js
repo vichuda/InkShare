@@ -173,7 +173,7 @@ app.use((req, res, next) => {
     }
 
     if (redirectLocation) {
-      return res.redirect(302, redirectLocation.pathname + redirectLocation.search);
+      return res.redirect(302, redirectLocation.pathname + redirectLocation.search)
     }
 
     if (!renderProps) {
