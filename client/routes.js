@@ -19,6 +19,7 @@ if (process.env.NODE_ENV !== 'production') {
   require('./modules/Post/pages/PostDetailPage/PostDetailPage')
   require('./modules/Book/pages/BookListPage/BookListPage')
   require('./modules/User/pages/LoginPage/LoginPage')
+  require('./modules/Dashboard/pages/DashboardPage/DashboardPage')
 }
 
 // react-router setup with code-splitting
@@ -29,7 +30,7 @@ export default (
       getComponent={(nextState, cb) => {
         require.ensure([], require => {
           cb(null, require('./modules/Book/pages/BookListPage/BookListPage').default)
-        });
+        })
       }}
     />
     <Route
@@ -37,6 +38,14 @@ export default (
       getComponent={(nextState, cb) => {
         require.ensure([], require => {
           cb(null, require('./modules/User/pages/LoginPage/LoginPage').default)
+        });
+      }}
+    />
+    <Route
+      path="/dashboard"
+      getComponent={(nextState, cb) => {
+        require.ensure([], require => {
+          cb(null, require('./modules/Dashboard/pages/DashboardPage/DashboardPage').default)
         });
       }}
     />
