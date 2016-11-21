@@ -22,6 +22,7 @@ export function Header(props) {
     >
       <MenuItem primaryText="Dashboard" onClick={dashboard} />
       <MenuItem primaryText="Settings" onClick={settings} />
+      <MenuItem primaryText="Logout" onClick={settings} />
     </IconMenu>
   )
 

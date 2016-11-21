@@ -114,7 +114,6 @@ app.post('/api/login', (req, res, next) => {
 
 
 app.route('/api/user').get((req, res) => {
-  console.log(req.headers)
   res.send({ data: (req.user || null) })
 })
 
