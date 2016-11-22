@@ -14,18 +14,35 @@ const style = {
   }
 }
 
+const tradeRequests = [
+  {
+    user: 'bob',
+    tradersBook: 'a good book',
+    book: 'another good book',
+    tradeID: '123'
+  },
+  {
+    user: 'joe',
+    tradersBook: 'teuhaste',
+    book: 'asethuc.huac23',
+    tradeID: '124'
+  }
+]
+
 class DashboardPage extends Component {
   constructor(props) {
     super(props)
 
     this.state = {
-      showRequests: false
+      showRequests: true
     }
 
     this.handleSellingClicked = this.handleSellingClicked.bind(this)
     this.handleRequestsClicked = this.handleRequestsClicked.bind(this)
     this.toggleShowRequests = this.toggleShowRequests.bind(this)
     this.handleAddBookButtonClicked = this.handleAddBookButtonClicked.bind(this)
+    this.handleAcceptTradeRequest = this.handleAcceptTradeRequest.bind(this)
+    this.handleDeclineTradeRequest = this.handleDeclineTradeRequest.bind(this)
   }
 
 
@@ -49,6 +66,16 @@ class DashboardPage extends Component {
   }
 
 
+  handleAcceptTradeRequest(tradeID) {
+    console.log('accepting the trade request: ', tradeID)
+  }
+
+
+  handleDeclineTradeRequest(tradeID) {
+    console.log('declining the trade request ', tradeID)
+  }
+
+
   render() {
     return (
       <div>
@@ -63,7 +90,16 @@ class DashboardPage extends Component {
           </ToolbarGroup>
         </Toolbar>
 
-        {this.state.showRequests ? <Requests /> : <Selling />}
+        {
+          this.state.showRequests ?
+            <Requests
+              tradeRequests={tradeRequests}
+              handleAcceptTradeRequest={this.handleAcceptTradeRequest}
+              handleDeclineTradeRequest={this.handleDeclineTradeRequest}
+            />
+            :
+            <Selling />
+        }
 
         <FloatingActionButton onClick={this.handleAddBookButtonClicked} secondary={Boolean(true)} style={style.addBookButton}>
           <ContentAdd />
