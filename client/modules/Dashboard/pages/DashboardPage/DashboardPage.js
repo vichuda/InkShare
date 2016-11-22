@@ -1,4 +1,4 @@
-import React, { PropTypes, Component } from 'react'
+import React, { Component } from 'react'
 import MenuItem from 'material-ui/MenuItem'
 import { Toolbar, ToolbarGroup, ToolbarSeparator, ToolbarTitle } from 'material-ui/Toolbar'
 import FloatingActionButton from 'material-ui/FloatingActionButton'
@@ -6,11 +6,12 @@ import ContentAdd from 'material-ui/svg-icons/content/add'
 
 import Requests from '../../components/Requests'
 import Selling from '../../components/Selling'
+import AddBookModal from '../../components/AddBookModal'
 
 const style = {
   addBookButton: {
     position: 'absolute',
-    right: '15%'
+    right: '10%'
   }
 }
 
@@ -29,12 +30,25 @@ const tradeRequests = [
   }
 ]
 
+
+const book = {
+  name: 'Cracking the Coding Interview',
+  author: 'Gayle Laakmann Mcdowell',
+  image: 'https://images-na.ssl-images-amazon.com/images/I/51F6Lwyq5JL._SX348_BO1,204,203,200_.jpg',
+  description: 'a good book',
+  seller: '4635324345',
+  price: 1,
+  id: '12493'
+}
+
+
 class DashboardPage extends Component {
   constructor(props) {
     super(props)
 
     this.state = {
-      showRequests: true
+      showRequests: false,
+      addBookModalOpen: false
     }
 
     this.handleSellingClicked = this.handleSellingClicked.bind(this)
@@ -43,6 +57,8 @@ class DashboardPage extends Component {
     this.handleAddBookButtonClicked = this.handleAddBookButtonClicked.bind(this)
     this.handleAcceptTradeRequest = this.handleAcceptTradeRequest.bind(this)
     this.handleDeclineTradeRequest = this.handleDeclineTradeRequest.bind(this)
+    this.toggleAddBookModal = this.toggleAddBookModal.bind(this)
+    this.createBookEntry = this.createBookEntry.bind(this)
   }
 
 
@@ -62,7 +78,7 @@ class DashboardPage extends Component {
 
 
   handleAddBookButtonClicked() {
-    console.log('add book button clicked')
+    this.toggleAddBookModal(true)
   }
 
 
@@ -73,6 +89,16 @@ class DashboardPage extends Component {
 
   handleDeclineTradeRequest(tradeID) {
     console.log('declining the trade request ', tradeID)
+  }
+
+
+  toggleAddBookModal(addBookModalOpen = false) {
+    this.setState({ addBookModalOpen })
+  }
+
+
+  createBookEntry(book) {
+    console.log('creating the book entry: ', book)
   }
 
 
@@ -101,6 +127,7 @@ class DashboardPage extends Component {
             <Selling />
         }
 
+        <AddBookModal open={this.state.addBookModalOpen} toggle={this.toggleAddBookModal} save={this.createBookEntry} />
         <FloatingActionButton onClick={this.handleAddBookButtonClicked} secondary={Boolean(true)} style={style.addBookButton}>
           <ContentAdd />
         </FloatingActionButton>

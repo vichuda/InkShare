@@ -30,11 +30,11 @@ export class App extends Component {
   }
 
 
+  // {this.state.isMounted && !window.devToolsExtension && process.env.NODE_ENV === 'development' && <DevTools />}
   render() {
     return (
       <MuiThemeProvider muiTheme={getMuiTheme(darkBaseTheme)}>
         <div style={{ backgroundColor: grey700 }}>
-          {this.state.isMounted && !window.devToolsExtension && process.env.NODE_ENV === 'development' && <DevTools />}
           <div>
             <Helmet
               title="Ink Share"

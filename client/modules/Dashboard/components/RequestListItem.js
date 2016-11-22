@@ -4,12 +4,10 @@ import FlatButton from 'material-ui/FlatButton'
 
 function RequestListItem(props) {
   const tradeText = `${props.tradeRequest.user} wants to trade ${props.tradeRequest.tradersBook} for ${props.tradeRequest.book}`
-  const rightButtons = (
-    <span>
-      <FlatButton secondary={Boolean(true)} label="Decline" onClick={decline} />
-      <FlatButton primary={Boolean(true)} label="Accept" onClick={accept} />
-    </span>
-  )
+  const rightButtons = [
+    <FlatButton secondary={Boolean(true)} label="Decline" onClick={decline} />,
+    <FlatButton primary={Boolean(true)} label="Accept" onClick={accept} />
+  ]
 
   function accept() {
     props.acceptRequest(props.tradeRequest.tradeID)
