@@ -25,6 +25,14 @@ export function requestCreateTradeRequest(bookID, tradersBookID, userID, userNam
 }
 
 
+export function requestAcceptTradeRequest(tradeRequest) {
+  return function dispatchedRequest(dispatch) {
+    dispatch(deleteTradeRequest(tradeRequest))
+    return callApi('/books/trade/request', 'put', tradeRequest)
+  }
+}
+
+
 export function requestDeclineTradeRequest(tradeRequest) {
   return function dispatchedRequest(dispatch) {
     return callApi('/books/trade/request', 'delete', tradeRequest)

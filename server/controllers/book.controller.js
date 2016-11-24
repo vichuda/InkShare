@@ -49,8 +49,12 @@ export function confirmTrade(req, res) {
 
 
 export function declineTrade(req, res) {
-  console.log(req.body)
-  res.send({ message: 'success' })
+  TradeRequest.findOneAndRemove(req.body)
+    .then(() => res.send({ message: 'success' }))
+    .catch(error => {
+      console.error(error) // eslint-disable-line
+      req.status(500).end()
+    })
 }
 
 

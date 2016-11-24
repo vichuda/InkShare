@@ -3,10 +3,13 @@ import { ListItem } from 'material-ui/List'
 import FlatButton from 'material-ui/FlatButton'
 
 function RequestListItem(props) {
+  const tradersBook = props.getBookByID(props.tradeRequest.tradersBookID)
+  const book = props.getBookByID(props.tradeRequest.bookID)
+
   const tradeText = `
     ${props.tradeRequest.userName} wants to trade
-    ${props.getBookByID(props.tradeRequest.tradersBookID).name} for
-    ${props.getBookByID(props.tradeRequest.bookID).name}
+    ${tradersBook ? tradersBook.name : ''} for
+    ${book ? book.name : ''}
   `
   const rightButtons = [
     <FlatButton secondary={Boolean(true)} label="Decline" onClick={decline} />,
@@ -20,6 +23,11 @@ function RequestListItem(props) {
 
   function decline() {
     props.declineRequest(props.tradeRequest)
+  }
+
+  if (!tradersBook || !book) {
+    decline()
+    return null
   }
 
   return (

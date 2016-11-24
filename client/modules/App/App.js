@@ -14,19 +14,26 @@ import Helmet from 'react-helmet'
 import DevTools from './components/DevTools'
 import Header from './components/Header/Header'
 import Footer from './components/Footer/Footer'
-import { getUserRequest } from '../User/UserActions'
+import { getUserRequest, requestLogout } from '../User/UserActions'
 import { getUser } from '../User/UserReducer'
 
 export class App extends Component {
   constructor(props) {
     super(props);
     this.state = { isMounted: false };
+
+    this.logout = this.logout.bind(this)
   }
 
 
   componentDidMount() {
     this.setState({isMounted: true}); // eslint-disable-line
     this.props.dispatch(getUserRequest())
+  }
+
+
+  logout() {
+    this.props.dispatch(requestLogout())
   }
 
 
@@ -51,7 +58,10 @@ export class App extends Component {
                 },
               ]}
             />
-            <Header user={this.props.user} />
+            <Header
+              user={this.props.user}
+              logout={this.logout}
+            />
             <div className={styles.container}>
               {this.props.children}
             </div>

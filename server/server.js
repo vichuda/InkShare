@@ -113,6 +113,12 @@ app.post('/api/login', (req, res, next) => {
 })
 
 
+app.put('/api/logout', (req, res) => {
+  req.logOut()
+  res.status(204).end()
+})
+
+
 app.route('/api/user').get((req, res) => {
   res.send({ data: (req.user || null) })
 })

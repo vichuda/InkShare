@@ -6,7 +6,7 @@ import FloatingActionButton from 'material-ui/FloatingActionButton'
 import ContentAdd from 'material-ui/svg-icons/content/add'
 
 import { getTradeRequests } from '../../DashboardReducer'
-import { fetchTradeRequests, requestDeclineTradeRequest } from '../../DashboardActions'
+import { fetchTradeRequests, requestDeclineTradeRequest, requestAcceptTradeRequest } from '../../DashboardActions'
 import { createBookRequest, fetchBooksRequest, deleteBookRequest } from '../../../Book/BookActions'
 import { getBooksByUser, getBookByID } from '../../../Book/BookReducer'
 import { getUser } from '../../../User/UserReducer'
@@ -77,6 +77,8 @@ class DashboardPage extends Component {
 
   handleAcceptTradeRequest(tradeRequest) {
     console.log('accepting the trade request: ', tradeRequest)
+    this.props.dispatch(requestAcceptTradeRequest(tradeRequest))
+      .then(response => console.log(response))
   }
 
 

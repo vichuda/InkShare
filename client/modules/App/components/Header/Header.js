@@ -22,7 +22,7 @@ export function Header(props) {
     >
       <MenuItem primaryText="Dashboard" onClick={dashboard} />
       <MenuItem primaryText="Settings" onClick={settings} />
-      <MenuItem primaryText="Logout" onClick={settings} />
+      <MenuItem primaryText="Logout" onClick={logout} />
     </IconMenu>
   )
 
@@ -38,6 +38,12 @@ export function Header(props) {
 
   function settings() {
     route('/settings')
+  }
+
+
+  function logout() {
+    props.logout()
+    home()
   }
 
 
@@ -62,7 +68,8 @@ export function Header(props) {
 }
 
 Header.propTypes = {
-  user: PropTypes.object
+  user: PropTypes.object,
+  logout: PropTypes.func.isRequired
 }
 
 export default Header;
