@@ -3,8 +3,12 @@ import { Card, CardActions, CardHeader, CardMedia, CardText } from 'material-ui/
 import FlatButton from 'material-ui/FlatButton'
 
 function BookListItem(props) {
+  function requestTrade() {
+    props.requestTrade(props.id, props.seller, props.user.username)
+  }
+
   return (
-    <div style={{ padding: '10px' }}>
+    <div style={{ padding: '20px' }}>
       <Card>
         <CardHeader
           title={props.name}
@@ -17,7 +21,11 @@ function BookListItem(props) {
           {props.description}
         </CardText>
         <CardActions>
-          <FlatButton label="Request Trade" primary={Boolean(true)} />
+          {
+            !!props.user && props.user.id !== props.seller
+                ? <FlatButton label="Request Trade" onClick={requestTrade} primary={Boolean(true)} />
+                : null
+          }
         </CardActions>
       </Card>
     </div>
@@ -30,7 +38,9 @@ BookListItem.propTypes = {
   image: PropTypes.string.isRequired,
   description: PropTypes.string.isRequired,
   seller: PropTypes.string.isRequired,
-  price: PropTypes.number.isRequired,
+  id: PropTypes.string.isRequired,
+  requestTrade: PropTypes.func.isRequired,
+  user: PropTypes.object
 }
 
 export default BookListItem

@@ -1,28 +1,12 @@
 import cuid from 'cuid'
-
-const books = [
-  {
-    name: 'Programming Collective Intelligence',
-    author: 'Toby Segaran',
-    image: 'http://t0.gstatic.com/images?q=tbn:ANd9GcRgfb9HBiMaEusNShDCHWJV7Qlp6uRpvA29SMIy7PoBXk09BtaX',
-    description: 'Intelligence is power',
-    seller: '46356345',
-    price: 10.50,
-    id: '12321'
-  },
-  {
-    name: 'Cracking the Coding Interview',
-    author: 'Gayle Laakmann Mcdowell',
-    image: 'https://images-na.ssl-images-amazon.com/images/I/51F6Lwyq5JL._SX348_BO1,204,203,200_.jpg',
-    description: 'a good book',
-    seller: '4635324345',
-    price: 1,
-    id: '12493'
-  }
-]
+import Book from '../models/book'
+import TradeRequest from '../models/trade-request'
 
 export function getBooks(req, res) {
-  res.send(books)
+  Book.find()
+    .then(books => {
+      res.send(books || [])
+    })
 }
 
 
@@ -31,13 +15,78 @@ export function createBook(req, res) {
   book.id = cuid()
   book.seller = req.user.id
 
-  // save the book in the database when you get it setup
+  new Book(book)
+    .save()
+    .then(savedBook => res.send(savedBook || {}))
+}
 
-  res.send(book)
+
+export function createTradeRequest(req, res) {
+  if (!req.user) {
+    return res.status(403).end()
+  }
+  // start back here we need to have the client send the userID getting it from the seller on book
+  const tradersID = req.user.id
+  const tradersBookID = req.body.tradersBookID
+  const userID = req.body.userID
+  const bookID = req.body.bookID
+  const userName = req.body.userName
+
+  new TradeRequest({ tradersID, tradersBookID, userID, bookID, userName })
+    .save()
+    .then(tradeRequest => res.send({ tradeRequest }))
+    .catch(error => {
+      console.error(error) // eslint-disable-line
+      res.status(500).end()
+    })
 }
 
 
 export function confirmTrade(req, res) {
   console.log('confirming the trade with request body of: ', req.body)
-  res.end(500)
+  res.status(204).end()
+}
+
+
+export function declineTrade(req, res) {
+  console.log(req.body)
+  res.send({ message: 'success' })
+}
+
+
+export function getTradeRequests(req, res) {
+  if (!req.user) {
+    return res.status(403).send([])
+  }
+  // start back here make user this works then work on creating trades
+  const userID = req.user.id
+  TradeRequest.find({ userID })
+    .then(tradeRequests => res.send(tradeRequests))
+    .catch(error => {
+      console.error(error) // eslint-disable-line
+      res.status(500).send([])
+    })
+}
+
+
+export function deleteBook(req, res) {
+  const id = req.body.id
+  if (!req.user) {
+    return res.status(403)
+  }
+
+  Book.findOne({ id })
+    .then(foundBook => {
+      if (!foundBook) {
+        res.status(410)
+      } else if (foundBook.seller !== req.user.id) {
+        res.status(403)
+      } else {
+        res.status(204)
+        foundBook.remove()
+      }
+
+      res.end()
+    })
+    .catch(error => console.error(error)) // eslint-disable-line
 }

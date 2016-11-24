@@ -13,9 +13,41 @@ export function fetchBooksRequest() {
 }
 
 
+export function createBookRequest(book) {
+  return function dispatchedRequest(dispatch) {
+    return callApi('books', 'post', book)
+      .then(createdBook => dispatch(addBook(createdBook)))
+  }
+}
+
+
+export function deleteBookRequest(bookID) {
+  return function dispatchedRequest(dispatch) {
+    dispatch(deleteBook(bookID))
+    return callApi('books', 'delete', { id: bookID })
+  }
+}
+
+
 export function addBooks(books) {
   return {
     type: ADD_BOOKS,
     books
+  }
+}
+
+
+export function addBook(book) {
+  return {
+    type: ADD_BOOK,
+    book
+  }
+}
+
+
+export function deleteBook(bookID) {
+  return {
+    type: DELETE_BOOK,
+    bookID
   }
 }

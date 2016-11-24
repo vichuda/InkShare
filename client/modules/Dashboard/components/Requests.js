@@ -4,8 +4,8 @@ import Subheader from 'material-ui/Subheader'
 import RequestListItem from './RequestListItem'
 
 const style = {
-  borderWidth: '20px',
-  borderColor: 'red'
+  // borderWidth: '20px',
+  // borderColor: 'red'
 }
 
 function Requests(props) {
@@ -15,6 +15,7 @@ function Requests(props) {
       {props.tradeRequests.map(tradeRequest =>
         <RequestListItem
           tradeRequest={tradeRequest}
+          getBookByID={props.getBookByID}
           acceptRequest={props.handleAcceptTradeRequest}
           declineRequest={props.handleDeclineTradeRequest}
           key={tradeRequest.tradeID}
@@ -27,7 +28,8 @@ function Requests(props) {
 Requests.propTypes = {
   tradeRequests: PropTypes.array.isRequired,
   handleAcceptTradeRequest: PropTypes.func.isRequired,
-  handleDeclineTradeRequest: PropTypes.func.isRequired
+  handleDeclineTradeRequest: PropTypes.func.isRequired,
+  getBookByID: PropTypes.func.isRequired
 }
 
 export default Requests

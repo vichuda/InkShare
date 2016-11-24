@@ -1,8 +1,15 @@
-import React, { Component } from 'react'
+import React, { Component, PropTypes } from 'react'
+import { connect } from 'react-redux'
 import MenuItem from 'material-ui/MenuItem'
 import { Toolbar, ToolbarGroup, ToolbarSeparator, ToolbarTitle } from 'material-ui/Toolbar'
 import FloatingActionButton from 'material-ui/FloatingActionButton'
 import ContentAdd from 'material-ui/svg-icons/content/add'
+
+import { getTradeRequests } from '../../DashboardReducer'
+import { fetchTradeRequests, requestDeclineTradeRequest } from '../../DashboardActions'
+import { createBookRequest, fetchBooksRequest, deleteBookRequest } from '../../../Book/BookActions'
+import { getBooksByUser, getBookByID } from '../../../Book/BookReducer'
+import { getUser } from '../../../User/UserReducer'
 
 import Requests from '../../components/Requests'
 import Selling from '../../components/Selling'
@@ -15,33 +22,6 @@ const style = {
   }
 }
 
-const tradeRequests = [
-  {
-    user: 'bob',
-    tradersBook: 'a good book',
-    book: 'another good book',
-    tradeID: '123'
-  },
-  {
-    user: 'joe',
-    tradersBook: 'teuhaste',
-    book: 'asethuc.huac23',
-    tradeID: '124'
-  }
-]
-
-
-const book = {
-  name: 'Cracking the Coding Interview',
-  author: 'Gayle Laakmann Mcdowell',
-  image: 'https://images-na.ssl-images-amazon.com/images/I/51F6Lwyq5JL._SX348_BO1,204,203,200_.jpg',
-  description: 'a good book',
-  seller: '4635324345',
-  price: 1,
-  id: '12493'
-}
-
-
 class DashboardPage extends Component {
   constructor(props) {
     super(props)
@@ -51,19 +31,27 @@ class DashboardPage extends Component {
       addBookModalOpen: false
     }
 
-    this.handleSellingClicked = this.handleSellingClicked.bind(this)
+    this.getBookByID = this.getBookByID.bind(this)
     this.handleRequestsClicked = this.handleRequestsClicked.bind(this)
     this.toggleShowRequests = this.toggleShowRequests.bind(this)
+    this.handleSellingClicked = this.handleSellingClicked.bind(this)
     this.handleAddBookButtonClicked = this.handleAddBookButtonClicked.bind(this)
     this.handleAcceptTradeRequest = this.handleAcceptTradeRequest.bind(this)
     this.handleDeclineTradeRequest = this.handleDeclineTradeRequest.bind(this)
     this.toggleAddBookModal = this.toggleAddBookModal.bind(this)
     this.createBookEntry = this.createBookEntry.bind(this)
+    this.deleteBook = this.deleteBook.bind(this)
   }
 
 
-  handleSellingClicked() {
-    this.toggleShowRequests(false)
+  componentDidMount() {
+    this.props.dispatch(fetchTradeRequests())
+    this.props.dispatch(fetchBooksRequest())
+  }
+
+
+  getBookByID(id) {
+    return this.props.stateBoundGetBookByID(id)
   }
 
 
@@ -77,18 +65,23 @@ class DashboardPage extends Component {
   }
 
 
+  handleSellingClicked() {
+    this.toggleShowRequests(false)
+  }
+
+
   handleAddBookButtonClicked() {
     this.toggleAddBookModal(true)
   }
 
 
-  handleAcceptTradeRequest(tradeID) {
-    console.log('accepting the trade request: ', tradeID)
+  handleAcceptTradeRequest(tradeRequest) {
+    console.log('accepting the trade request: ', tradeRequest)
   }
 
 
-  handleDeclineTradeRequest(tradeID) {
-    console.log('declining the trade request ', tradeID)
+  handleDeclineTradeRequest(tradeRequest) {
+    this.props.dispatch(requestDeclineTradeRequest(tradeRequest))
   }
 
 
@@ -98,7 +91,12 @@ class DashboardPage extends Component {
 
 
   createBookEntry(book) {
-    console.log('creating the book entry: ', book)
+    this.props.dispatch(createBookRequest(book))
+  }
+
+
+  deleteBook(bookID) {
+    this.props.dispatch(deleteBookRequest(bookID))
   }
 
 
@@ -119,16 +117,29 @@ class DashboardPage extends Component {
         {
           this.state.showRequests ?
             <Requests
-              tradeRequests={tradeRequests}
+              tradeRequests={this.props.tradeRequests}
               handleAcceptTradeRequest={this.handleAcceptTradeRequest}
               handleDeclineTradeRequest={this.handleDeclineTradeRequest}
+              getBookByID={this.getBookByID}
             />
             :
-            <Selling />
+            <Selling
+              myBooks={this.props.myBooks}
+              deleteBook={this.deleteBook}
+            />
         }
 
-        <AddBookModal open={this.state.addBookModalOpen} toggle={this.toggleAddBookModal} save={this.createBookEntry} />
-        <FloatingActionButton onClick={this.handleAddBookButtonClicked} secondary={Boolean(true)} style={style.addBookButton}>
+        <AddBookModal
+          open={this.state.addBookModalOpen}
+          toggle={this.toggleAddBookModal}
+          save={this.createBookEntry}
+        />
+
+        <FloatingActionButton
+          onClick={this.handleAddBookButtonClicked}
+          secondary={Boolean(true)}
+          style={style.addBookButton}
+        >
           <ContentAdd />
         </FloatingActionButton>
       </div>
@@ -136,6 +147,19 @@ class DashboardPage extends Component {
   }
 }
 
-DashboardPage.propTypes = {}
+DashboardPage.propTypes = {
+  tradeRequests: PropTypes.array.isRequired,
+  myBooks: PropTypes.array.isRequired,
+  stateBoundGetBookByID: PropTypes.func.isRequired,
+  dispatch: PropTypes.func.isRequired
+}
 
-export default DashboardPage
+function mapStateToProps(state) {
+  return {
+    tradeRequests: getTradeRequests(state),
+    myBooks: getBooksByUser(state, ((getUser(state) || {}).id || '')),
+    stateBoundGetBookByID: getBookByID.bind(null, state)
+  }
+}
+
+export default connect(mapStateToProps)(DashboardPage)

@@ -11,8 +11,7 @@ class AddBookModal extends Component {
       title: '',
       author: '',
       image: '',
-      description: '',
-      price: ''
+      description: ''
     }
 
     this.close = this.close.bind(this)
@@ -35,7 +34,12 @@ class AddBookModal extends Component {
 
   createBookEntryFromProps() {
     const deepCopiedState = JSON.parse(JSON.stringify(this.state))
-    return deepCopiedState
+    return {
+      name: deepCopiedState.title,
+      author: deepCopiedState.author,
+      image: deepCopiedState.image,
+      description: deepCopiedState.description
+    }
   }
 
 
@@ -60,6 +64,7 @@ class AddBookModal extends Component {
         fullWidth={Boolean(true)}
         type={key === 'price' ? 'number' : 'text'}
         autoComplete="off"
+        key={key}
       />
     )
   }
