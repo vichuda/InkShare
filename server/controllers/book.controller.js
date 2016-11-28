@@ -1,6 +1,8 @@
 import cuid from 'cuid'
 import Book from '../models/book'
 import TradeRequest from '../models/trade-request'
+import User from '../models/user'
+import Shipment from '../models/shipment'
 
 export function getBooks(req, res) {
   Book.find()
@@ -43,8 +45,59 @@ export function createTradeRequest(req, res) {
 
 
 export function confirmTrade(req, res) {
-  console.log('confirming the trade with request body of: ', req.body)
-  res.status(204).end()
+  const { tradersID, tradersBookID, userID, bookID } = req.body
+  if (!req.user) {
+    return res.status(403).send({ message: 'you need to login' })
+  }
+
+  const databaseQueries = [
+    Book.findOne({ id: tradersBookID }),
+    Book.findOne({ id: bookID }),
+    User.findOne({ id: tradersID }),
+    User.findOne({ id: userID })
+  ]
+
+
+  function createShipment(shipToUser, originalUser, book) {
+    return new Shipment({
+      shipToUser: shipToUser.id,
+      originalUser: originalUser.id,
+      book: book.name
+    })
+  }
+
+
+  Promise.all(databaseQueries)
+    .then(results => {
+      const [tradersBook, book, trader, user] = results
+
+      const tradersShipment = createShipment(user, trader, tradersBook)
+      const usersShipment = createShipment(trader, user, book)
+
+      if (!tradersBook || !book || !trader || !user) {
+        return res.status(403).end()
+      }
+
+      const saveAndDeletePromises = [
+        tradersShipment.save(),
+        usersShipment.save()
+        // uncomment these when your ready to delete the trade book
+        // book.remove(),
+        // tradersBook.remove(),
+
+      ]
+
+      return Promise.all(saveAndDeletePromises)
+        .then(() => res.send({ message: 'success' }))
+    })
+    .catch(error => {
+      console.error(error) // eslint-disable-line
+      res.status(500).end()
+    })
+
+  // start back here make sure the user is logged in then delete the books in the trade
+  // and add the shipping users shipping info to both of the users shipments
+  // also make sure the books are still available
 }
 
 

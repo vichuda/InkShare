@@ -1,10 +1,12 @@
 import { Router } from 'express'
-import PostRoutes from './post.routes'
-import BookRoutes from './book.routes'
+import postRoutes from './post.routes'
+import bookRoutes from './book.routes'
+import shipments from './shipments.routes'
 
 const router = new Router()
 
-router.use('/post', PostRoutes)
-router.use('/books', BookRoutes)
+router.use('/post', postRoutes)
+router.use('/books', bookRoutes)
+router.use('/shipments', shipments)
 
 export default router

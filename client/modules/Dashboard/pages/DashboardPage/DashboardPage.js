@@ -6,7 +6,7 @@ import FloatingActionButton from 'material-ui/FloatingActionButton'
 import ContentAdd from 'material-ui/svg-icons/content/add'
 
 import { getTradeRequests } from '../../DashboardReducer'
-import { fetchTradeRequests, requestDeclineTradeRequest, requestAcceptTradeRequest } from '../../DashboardActions'
+import { fetchTradeRequests, fetchShipments, requestDeclineTradeRequest, requestAcceptTradeRequest } from '../../DashboardActions'
 import { createBookRequest, fetchBooksRequest, deleteBookRequest } from '../../../Book/BookActions'
 import { getBooksByUser, getBookByID } from '../../../Book/BookReducer'
 import { getUser } from '../../../User/UserReducer'
@@ -47,6 +47,7 @@ class DashboardPage extends Component {
   componentDidMount() {
     this.props.dispatch(fetchTradeRequests())
     this.props.dispatch(fetchBooksRequest())
+    this.props.dispatch(fetchShipments())
   }
 
 

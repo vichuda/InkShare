@@ -4,6 +4,7 @@ import mongoose from 'mongoose'
 import bodyParser from 'body-parser'
 import path from 'path'
 import IntlWrapper from '../client/modules/Intl/IntlWrapper'
+import connectMongo from 'connect-mongo'
 import session from 'express-session'
 import passport from 'passport'
 import BasicStrategy from 'passport-local'
@@ -18,6 +19,7 @@ import webpackHotMiddleware from 'webpack-hot-middleware'
 
 // Initialize the Express App
 const app = new Express()
+const MongoStore = connectMongo(session)
 
 // Run Webpack dev server in development mode
 if (process.env.NODE_ENV === 'development') {
@@ -56,7 +58,10 @@ app.use(compression())
 app.use(bodyParser.json({ limit: '20mb' }))
 app.use(bodyParser.urlencoded({ limit: '20mb', extended: false }))
 app.use(Express.static(path.resolve(__dirname, '../dist')))
-app.use(session({ secret: 'keyboard cat' }))
+app.use(session({
+  secret: 'keyboard cat',
+  store: new MongoStore({ mongooseConnection: mongoose.connection })
+}))
 app.use(passport.initialize())
 app.use(passport.session())
 
