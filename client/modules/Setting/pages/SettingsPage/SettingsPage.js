@@ -5,14 +5,7 @@ import FlatButton from 'material-ui/FlatButton'
 import { getUser } from '../../../User/UserReducer'
 import { requestUpdateShippingInfo } from '../../../User/UserActions'
 
-// const styles = {
-//   maxWidth: '980px',
-//   padding: '15px',
-//   margin: '0 auto',
-//   width: '100%'
-// }
 import styles from '../../../App/App.css'
-console.log(styles)
 
 class SettingsPage extends Component {
   constructor(props) {

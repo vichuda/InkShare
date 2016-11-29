@@ -73,7 +73,7 @@ class DashboardPage extends Component {
 
   handleAcceptTradeRequest(tradeRequest) {
     this.props.dispatch(requestAcceptTradeRequest(tradeRequest))
-      .then(response => console.log(response))
+      .then(() => this.props.dispatch(fetchShipments()))
   }
 
 
@@ -179,7 +179,7 @@ class DashboardPage extends Component {
           >
             <ContentAdd />
           </FloatingActionButton>
-      </div>
+        </div>
       </div>
     )
   }
