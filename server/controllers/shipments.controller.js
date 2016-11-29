@@ -11,6 +11,10 @@ export function getUsersPendingShipments(req, res) {
     .then(injectedShipments => {
       res.send({ data: injectedShipments })
     })
+    .catch(error => {
+      console.error(error) // eslint-disable-line
+      res.status(500)
+    })
 }
 
 

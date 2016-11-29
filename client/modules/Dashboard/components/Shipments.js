@@ -21,6 +21,7 @@ function Shipments(props) {
             <FlatButton
               label="Shipped"
               onClick={() => props.deleteShipment(shipment)}
+              disabled={!shipment.shippingAddress}
             />
           }
           key={`${shipment.databaseObject.book}${shipment.shippingAddress}`}

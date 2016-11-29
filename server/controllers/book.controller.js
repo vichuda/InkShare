@@ -27,7 +27,7 @@ export function createTradeRequest(req, res) {
   if (!req.user) {
     return res.status(403).end()
   }
-  // start back here we need to have the client send the userID getting it from the seller on book
+
   const tradersID = req.user.id
   const tradersBookID = req.body.tradersBookID
   const userID = req.body.userID
@@ -80,11 +80,9 @@ export function confirmTrade(req, res) {
 
       const saveAndDeletePromises = [
         tradersShipment.save(),
-        usersShipment.save()
-        // uncomment these when your ready to delete the trade book
-        // book.remove(),
-        // tradersBook.remove(),
-
+        usersShipment.save(),
+        book.remove(),
+        tradersBook.remove(),
       ]
 
       return Promise.all(saveAndDeletePromises)
@@ -94,10 +92,6 @@ export function confirmTrade(req, res) {
       console.error(error) // eslint-disable-line
       res.status(500).end()
     })
-
-  // start back here make sure the user is logged in then delete the books in the trade
-  // and add the shipping users shipping info to both of the users shipments
-  // also make sure the books are still available
 }
 
 
@@ -115,7 +109,7 @@ export function getTradeRequests(req, res) {
   if (!req.user) {
     return res.status(403).send([])
   }
-  // start back here make user this works then work on creating trades
+
   const userID = req.user.id
   TradeRequest.find({ userID })
     .then(tradeRequests => res.send(tradeRequests))
