@@ -17,8 +17,7 @@ export function fetchShipments() {
   return function dispatchedRequest(dispatch) {
     return callApi('shipments')
       .then(shipments => {
-        console.log('setting the shipments: ', shipments)
-        // dispatch(setShipments(shipments))
+        dispatch(setShipments(shipments.data))
       })
   }
 }

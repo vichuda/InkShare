@@ -5,7 +5,7 @@ import { Toolbar, ToolbarGroup, ToolbarSeparator, ToolbarTitle } from 'material-
 import FloatingActionButton from 'material-ui/FloatingActionButton'
 import ContentAdd from 'material-ui/svg-icons/content/add'
 
-import { getTradeRequests } from '../../DashboardReducer'
+import { getTradeRequests, getShipments } from '../../DashboardReducer'
 import { fetchTradeRequests, fetchShipments, requestDeclineTradeRequest, requestAcceptTradeRequest } from '../../DashboardActions'
 import { createBookRequest, fetchBooksRequest, deleteBookRequest } from '../../../Book/BookActions'
 import { getBooksByUser, getBookByID } from '../../../Book/BookReducer'
@@ -13,6 +13,7 @@ import { getUser } from '../../../User/UserReducer'
 
 import Requests from '../../components/Requests'
 import Selling from '../../components/Selling'
+import Shipments from '../../components/Shipments'
 import AddBookModal from '../../components/AddBookModal'
 
 const style = {
@@ -27,20 +28,22 @@ class DashboardPage extends Component {
     super(props)
 
     this.state = {
-      showRequests: false,
+      shownSubpage: 'selling',
       addBookModalOpen: false
     }
 
     this.getBookByID = this.getBookByID.bind(this)
-    this.handleRequestsClicked = this.handleRequestsClicked.bind(this)
-    this.toggleShowRequests = this.toggleShowRequests.bind(this)
-    this.handleSellingClicked = this.handleSellingClicked.bind(this)
+    this.handleSubheaderButtonClicked = this.handleSubheaderButtonClicked.bind(this)
     this.handleAddBookButtonClicked = this.handleAddBookButtonClicked.bind(this)
     this.handleAcceptTradeRequest = this.handleAcceptTradeRequest.bind(this)
     this.handleDeclineTradeRequest = this.handleDeclineTradeRequest.bind(this)
     this.toggleAddBookModal = this.toggleAddBookModal.bind(this)
     this.createBookEntry = this.createBookEntry.bind(this)
     this.deleteBook = this.deleteBook.bind(this)
+    this.handleSellingButtonClicked = this.handleSellingButtonClicked.bind(this)
+    this.handleRequestsButtonClicked = this.handleRequestsButtonClicked.bind(this)
+    this.handleShipmentsButtonClicked = this.handleShipmentsButtonClicked.bind(this)
+    this.getShownSubpage = this.getShownSubpage.bind(this)
   }
 
 
@@ -56,18 +59,8 @@ class DashboardPage extends Component {
   }
 
 
-  handleRequestsClicked() {
-    this.toggleShowRequests(true)
-  }
-
-
-  toggleShowRequests(showRequests = false) {
-    this.setState({ showRequests })
-  }
-
-
-  handleSellingClicked() {
-    this.toggleShowRequests(false)
+  handleSubheaderButtonClicked(e) {
+    this.setState({ shownSubpage: e.target.id })
   }
 
 
@@ -103,6 +96,51 @@ class DashboardPage extends Component {
   }
 
 
+  handleSellingButtonClicked() {
+    this.setState({ shownSubpage: 'selling' })
+  }
+
+
+  handleRequestsButtonClicked() {
+    this.setState({ shownSubpage: 'requests' })
+  }
+
+
+  handleShipmentsButtonClicked() {
+    this.setState({ shownSubpage: 'shipments' })
+  }
+
+
+  getShownSubpage() {
+    switch (this.state.shownSubpage) {
+      case 'selling':
+        return (
+          <Selling
+            myBooks={this.props.myBooks}
+            deleteBook={this.deleteBook}
+          />
+        )
+      case 'requests':
+        return (
+          <Requests
+            tradeRequests={this.props.tradeRequests}
+            handleAcceptTradeRequest={this.handleAcceptTradeRequest}
+            handleDeclineTradeRequest={this.handleDeclineTradeRequest}
+            getBookByID={this.props.stateBoundGetBookByID}
+          />
+        )
+      case 'shipments':
+        return (
+          <Shipments
+            shipments={this.props.shipments}
+          />
+        )
+      default:
+        return null
+    }
+  }
+
+
   render() {
     return (
       <div>
@@ -112,25 +150,13 @@ class DashboardPage extends Component {
             <ToolbarSeparator />
           </ToolbarGroup>
           <ToolbarGroup>
-            <MenuItem primaryText="Selling" onClick={this.handleSellingClicked} />
-            <MenuItem primaryText="Requests" onClick={this.handleRequestsClicked} />
+            <MenuItem primaryText="Selling" onClick={this.handleSellingButtonClicked} />
+            <MenuItem primaryText="Requests" onClick={this.handleRequestsButtonClicked} />
+            <MenuItem primaryText="Shipments" onClick={this.handleShipmentsButtonClicked} />
           </ToolbarGroup>
         </Toolbar>
 
-        {
-          this.state.showRequests ?
-            <Requests
-              tradeRequests={this.props.tradeRequests}
-              handleAcceptTradeRequest={this.handleAcceptTradeRequest}
-              handleDeclineTradeRequest={this.handleDeclineTradeRequest}
-              getBookByID={this.getBookByID}
-            />
-            :
-            <Selling
-              myBooks={this.props.myBooks}
-              deleteBook={this.deleteBook}
-            />
-        }
+        {this.getShownSubpage()}
 
         <AddBookModal
           open={this.state.addBookModalOpen}
@@ -152,6 +178,7 @@ class DashboardPage extends Component {
 
 DashboardPage.propTypes = {
   tradeRequests: PropTypes.array.isRequired,
+  shipments: PropTypes.array.isRequired,
   myBooks: PropTypes.array.isRequired,
   stateBoundGetBookByID: PropTypes.func.isRequired,
   dispatch: PropTypes.func.isRequired
@@ -160,6 +187,7 @@ DashboardPage.propTypes = {
 function mapStateToProps(state) {
   return {
     tradeRequests: getTradeRequests(state),
+    shipments: getShipments(state),
     myBooks: getBooksByUser(state, ((getUser(state) || {}).id || '')),
     stateBoundGetBookByID: getBookByID.bind(null, state)
   }

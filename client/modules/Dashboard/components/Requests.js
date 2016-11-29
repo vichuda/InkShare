@@ -3,14 +3,9 @@ import List from 'material-ui/List'
 import Subheader from 'material-ui/Subheader'
 import RequestListItem from './RequestListItem'
 
-const style = {
-  // borderWidth: '20px',
-  // borderColor: 'red'
-}
-
 function Requests(props) {
   return (
-    <List style={style}>
+    <List>
       <Subheader>Trade Requests</Subheader>
       {props.tradeRequests.map(tradeRequest =>
         <RequestListItem
