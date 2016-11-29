@@ -62,7 +62,7 @@ export class App extends Component {
               user={this.props.user}
               logout={this.logout}
             />
-            <div className={styles.container}>
+            <div>
               {this.props.children}
             </div>
             <Footer />

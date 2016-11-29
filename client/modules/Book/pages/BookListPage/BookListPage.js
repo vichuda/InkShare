@@ -9,6 +9,7 @@ import { getUser } from '../../../User/UserReducer'
 import BookListItem from '../../components/BookListItem/BookListItem'
 import TradeRequestModel from '../../components/TradeRequestModel'
 
+import appStyles from '../../../App/App.css'
 
 class BookListPage extends Component {
   constructor(props) {
@@ -31,7 +32,7 @@ class BookListPage extends Component {
 
   render() {
     return (
-      <div>
+      <div className={appStyles.container}>
         {this.props.books.map(book =>
           <BookListItem
             {...book}

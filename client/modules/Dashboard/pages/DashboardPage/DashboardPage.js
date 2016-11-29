@@ -16,6 +16,7 @@ import Selling from '../../components/Selling'
 import Shipments from '../../components/Shipments'
 import AddBookModal from '../../components/AddBookModal'
 
+import appStyles from '../../../App/App.css'
 const style = {
   addBookButton: {
     position: 'absolute',
@@ -71,7 +72,6 @@ class DashboardPage extends Component {
 
 
   handleAcceptTradeRequest(tradeRequest) {
-    console.log('accepting the trade request: ', tradeRequest)
     this.props.dispatch(requestAcceptTradeRequest(tradeRequest))
       .then(response => console.log(response))
   }
@@ -163,21 +163,23 @@ class DashboardPage extends Component {
           </ToolbarGroup>
         </Toolbar>
 
-        {this.getShownSubpage()}
+        <div className={appStyles.container}>
+          {this.getShownSubpage()}
 
-        <AddBookModal
-          open={this.state.addBookModalOpen}
-          toggle={this.toggleAddBookModal}
-          save={this.createBookEntry}
-        />
+          <AddBookModal
+            open={this.state.addBookModalOpen}
+            toggle={this.toggleAddBookModal}
+            save={this.createBookEntry}
+          />
 
-        <FloatingActionButton
-          onClick={this.handleAddBookButtonClicked}
-          secondary={Boolean(true)}
-          style={style.addBookButton}
-        >
-          <ContentAdd />
-        </FloatingActionButton>
+          <FloatingActionButton
+            onClick={this.handleAddBookButtonClicked}
+            secondary={Boolean(true)}
+            style={style.addBookButton}
+          >
+            <ContentAdd />
+          </FloatingActionButton>
+      </div>
       </div>
     )
   }
