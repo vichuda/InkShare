@@ -5,7 +5,7 @@ import FlatButton from 'material-ui/FlatButton'
 
 function Shipments(props) {
   const shippingAddressNotSetup = 'the user hasn\'t setup shipping info'
-  const shippingAddress = shipment => `package and send ${shipment.databaseObject.book} to ${shipment.shippingAddress}`
+  const shippingAddress = shipment => `package and send ${shipment.databaseObject.book} to ${shipment.fullName} at ${shipment.shippingAddress}`
 
   return (
     <List>
@@ -21,7 +21,7 @@ function Shipments(props) {
             <FlatButton
               label="Shipped"
               onClick={() => props.deleteShipment(shipment)}
-              disabled={!shipment.shippingAddress}
+              disabled={!shipment.shippingAddress || !shipment.fullName}
             />
           }
           key={`${shipment.databaseObject.book}${shipment.shippingAddress}`}

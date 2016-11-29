@@ -123,11 +123,6 @@ app.put('/api/logout', (req, res) => {
   res.status(204).end()
 })
 
-
-app.route('/api/user').get((req, res) => {
-  res.send({ data: (req.user || null) })
-})
-
 app.use('/api', api)
 
 

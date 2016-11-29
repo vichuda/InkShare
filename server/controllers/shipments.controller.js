@@ -20,10 +20,10 @@ export function getUsersPendingShipments(req, res) {
 
 function injectShippingInfo(shipment) {
   return findUserInShipment(shipment)
-    .then(({ shippingAddress, zipCode }) => {
+    .then(({ shippingAddress, fullName }) => {
       return {
         shippingAddress,
-        zipCode,
+        fullName,
         book: shipment.book,
         databaseObject: shipment
       }

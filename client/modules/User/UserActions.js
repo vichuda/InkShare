@@ -12,6 +12,17 @@ export function getUserRequest() {
 }
 
 
+export function requestUpdateShippingInfo(fullName, shippingAddress) {
+  return function dispatchedRequest(dispatch) {
+    return callApi('user', 'PATCH', { fullName, shippingAddress })
+      .then(response => {
+        console.log('your fucking response :', response)
+        dispatch(setUser(response.data))
+      })
+  }
+}
+
+
 export function login(username, password, signup) {
   return callApi('login', 'POST', { username, password, signup })
     .catch(err => console.error(err)) // eslint-disable-line
