@@ -9,10 +9,8 @@ export function getUsersPendingShipments(req, res) {
   Shipment.find({ originalUser: req.user.id })
     .then(shipments => Promise.all(shipments.map(injectShippingInfo)))
     .then(injectedShipments => {
-      console.log(injectedShipments)
       res.send({ data: injectedShipments })
     })
-  // res.send({ message: 'fuck you bitch' })
 }
 
 
@@ -31,4 +29,11 @@ function injectShippingInfo(shipment) {
 
 function findUserInShipment(shipment) {
   return User.findOne({ id: shipment.shipToUser })
+}
+
+
+export function deleteShipment(req, res) {
+  Shipment.findOneAndRemove(req.body)
+    .catch(console.error) // eslint-disable-line
+  res.status(204).end()
 }

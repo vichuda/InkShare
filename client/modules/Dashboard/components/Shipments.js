@@ -20,7 +20,7 @@ function Shipments(props) {
           rightIconButton={
             <FlatButton
               label="Shipped"
-              disabled={!shipment.shippingAddress}
+              onClick={() => props.deleteShipment(shipment)}
             />
           }
           key={`${shipment.databaseObject.book}${shipment.shippingAddress}`}
@@ -31,7 +31,8 @@ function Shipments(props) {
 }
 
 Shipments.propTypes = {
-  shipments: PropTypes.array.isRequired
+  shipments: PropTypes.array.isRequired,
+  deleteShipment: PropTypes.func.isRequired
 }
 
 export default Shipments

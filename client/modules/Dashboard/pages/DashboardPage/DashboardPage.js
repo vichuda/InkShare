@@ -6,7 +6,7 @@ import FloatingActionButton from 'material-ui/FloatingActionButton'
 import ContentAdd from 'material-ui/svg-icons/content/add'
 
 import { getTradeRequests, getShipments } from '../../DashboardReducer'
-import { fetchTradeRequests, fetchShipments, requestDeclineTradeRequest, requestAcceptTradeRequest } from '../../DashboardActions'
+import { fetchTradeRequests, fetchShipments, requestDeclineTradeRequest, requestAcceptTradeRequest, requestDeleteShipment } from '../../DashboardActions'
 import { createBookRequest, fetchBooksRequest, deleteBookRequest } from '../../../Book/BookActions'
 import { getBooksByUser, getBookByID } from '../../../Book/BookReducer'
 import { getUser } from '../../../User/UserReducer'
@@ -44,6 +44,7 @@ class DashboardPage extends Component {
     this.handleRequestsButtonClicked = this.handleRequestsButtonClicked.bind(this)
     this.handleShipmentsButtonClicked = this.handleShipmentsButtonClicked.bind(this)
     this.getShownSubpage = this.getShownSubpage.bind(this)
+    this.deleteShipment = this.deleteShipment.bind(this)
   }
 
 
@@ -111,6 +112,11 @@ class DashboardPage extends Component {
   }
 
 
+  deleteShipment(shipment) {
+    this.props.dispatch(requestDeleteShipment(shipment))
+  }
+
+
   getShownSubpage() {
     switch (this.state.shownSubpage) {
       case 'selling':
@@ -133,6 +139,7 @@ class DashboardPage extends Component {
         return (
           <Shipments
             shipments={this.props.shipments}
+            deleteShipment={this.deleteShipment}
           />
         )
       default:
