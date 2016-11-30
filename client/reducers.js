@@ -6,7 +6,6 @@ import { combineReducers } from 'redux'
 // Import Reducers
 import app from './modules/App/AppReducer'
 import posts from './modules/Post/PostReducer'
-import intl from './modules/Intl/IntlReducer'
 import books from './modules/Book/BookReducer'
 import user from './modules/User/UserReducer'
 import dashboard from './modules/Dashboard/DashboardReducer'
@@ -15,7 +14,6 @@ import dashboard from './modules/Dashboard/DashboardReducer'
 export default combineReducers({
   app,
   posts,
-  intl,
   books,
   user,
   dashboard
