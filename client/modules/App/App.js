@@ -4,7 +4,6 @@ import { connect } from 'react-redux';
 import MuiThemeProvider from 'material-ui/styles/MuiThemeProvider'
 import getMuiTheme from 'material-ui/styles/getMuiTheme'
 import darkBaseTheme from 'material-ui/styles/baseThemes/darkBaseTheme'
-import { grey700 } from 'material-ui/styles/colors'
 
 // Import Style
 import styles from './App.css'
@@ -38,31 +37,33 @@ export class App extends Component {
 
 
   // {this.state.isMounted && !window.devToolsExtension && process.env.NODE_ENV === 'development' && <DevTools />}
+  // <div style={{ backgroundColor: grey700 }}>
   render() {
     return (
       <MuiThemeProvider muiTheme={getMuiTheme(darkBaseTheme)}>
-        <div style={{ backgroundColor: grey700 }}>
-          <div>
-            <Helmet
-              title="Ink Share"
-              titleTemplate="%s - Book Sharing Made Easy"
-              meta={[
-                { charset: 'utf-8' },
-                {
-                  'http-equiv': 'X-UA-Compatible',
-                  content: 'IE=edge',
-                },
-                {
-                  name: 'viewport',
-                  content: 'width=device-width, initial-scale=1',
-                },
-              ]}
-            />
+        <div className={styles}>
+          <Helmet
+            title="Ink Share"
+            titleTemplate="%s - Book Sharing Made Easy"
+            meta={[
+              { charset: 'utf-8' },
+              {
+                'http-equiv': 'X-UA-Compatible',
+                content: 'IE=edge',
+              },
+              {
+                name: 'viewport',
+                content: 'width=device-width, initial-scale=1',
+              },
+            ]}
+          />
+
+          <div id="content-container">
             <Header
               user={this.props.user}
               logout={this.logout}
             />
-            <div>
+            <div className={styles['content-container']}>
               {this.props.children}
             </div>
             <Footer />

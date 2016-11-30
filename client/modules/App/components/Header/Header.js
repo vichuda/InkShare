@@ -7,9 +7,6 @@ import MenuItem from 'material-ui/MenuItem'
 import MoreVertIcon from 'material-ui/svg-icons/navigation/more-vert'
 import { browserHistory } from 'react-router'
 
-// Import Style
-import styles from './Header.css'
-
 export function Header(props) {
   const loginButton = <FlatButton label="Login" onClick={login} />
   const loggedIn = (
@@ -57,13 +54,11 @@ export function Header(props) {
 
 
   return (
-    <div className={styles.header}>
-      <AppBar
-        title="Ink Share" showMenuIconButton={Boolean(false)}
-        onTitleTouchTap={home}
-        iconElementRight={props.user ? loggedIn : loginButton}
-      />
-    </div>
+    <AppBar
+      title="Ink Share" showMenuIconButton={Boolean(false)}
+      onTitleTouchTap={home}
+      iconElementRight={props.user ? loggedIn : loginButton}
+    />
   )
 }
 
